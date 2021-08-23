@@ -4,6 +4,7 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.brigadier.suggestion.SuggestionProvider;
 
 import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
@@ -18,8 +19,6 @@ import net.minecraft.server.command.ParticleCommand;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
-
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 
@@ -30,11 +29,28 @@ public class ParticlePlusCommand implements Command<ServerCommandSource> {
 	private ParticlePlusCommand () {}
 	
 	public enum Mode {
-		TEST("test");
+		TEST("test"), BASE("base"), SHAPE2D("shape2d"), SHAPE3D("shape3d"), 
+		PATH("path"), MATH("math"), TEXT("text"),
+		MODEL("model"), PROGRAM("program");
 		
 		private String name;
 		
-		private Mode (String name) { this.name = name; };
+		private Mode (String name) { this.name = name; }
+		
+		public static SuggestionProvider<ServerCommandSource> SUGGESTION_PROVIDER = (ctx, builder) -> {
+			builder.suggest(TEST.name).suggest(BASE.name).suggest(MODEL.name).suggest(PROGRAM.name).suggest(TEXT.name);
+			return builder.buildFuture();
+		};
+		
+		public static Mode fromString (String str) {
+			if (str.toLowerCase().equals("test")) return TEST;
+			else if (str.toLowerCase().equals("base")) return BASE;
+			else if (str.toLowerCase().equals("model")) return MODEL;
+			else if (str.toLowerCase().equals("program")) return PROGRAM;
+			else if (str.toLowerCase().equals("text")) return TEXT;
+			else return null;
+		}
+		
 		@Override
 		public String toString() {
 			// TODO Auto-generated method stub

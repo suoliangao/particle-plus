@@ -6,6 +6,7 @@ import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.particle.ParticleTypes;
 import top.suoliangao.particleplus.command.ParticlePlusCommand;
+import top.suoliangao.particleplus.particle.ParticleController;
 
 public class ParticlePlusMod  implements ModInitializer {
 	
@@ -21,7 +22,7 @@ public class ParticlePlusMod  implements ModInitializer {
 			System.out.println("Spawning particles on client.");
 			Particle p = client.particleManager.addParticle(ParticleTypes.END_ROD, buf.readDouble(), buf.readDouble(), buf.readDouble(), 0, 0, 0);
 			p.setColor(0x66/255f, 0xcc/255f, 0xff/255f);
-			
+			new ParticleController(p);
 		});
 		System.out.println("Hello Particles!");
 	}
