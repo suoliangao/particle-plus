@@ -29,16 +29,20 @@ public class ParticlePlusCommand implements Command<ServerCommandSource> {
 	private ParticlePlusCommand () {}
 	
 	public enum Mode {
-		TEST("test"), BASE("base"), SHAPE2D("shape2d"), SHAPE3D("shape3d"), 
-		PATH("path"), MATH("math"), TEXT("text"),
-		MODEL("model"), PROGRAM("program");
+		// basic
+		TEST("test"), BASE("base"), 
+		// internal model
+		SHAPE2D("shape2d"), SHAPE3D("shape3d"), TEXT("text"),
+		// motion
+		PATH("path"), MATH("math"), 
+		MODEL("model"), SCRIPT("script");
 		
 		private String name;
 		
 		private Mode (String name) { this.name = name; }
 		
 		public static SuggestionProvider<ServerCommandSource> SUGGESTION_PROVIDER = (ctx, builder) -> {
-			builder.suggest(TEST.name).suggest(BASE.name).suggest(MODEL.name).suggest(PROGRAM.name).suggest(TEXT.name);
+			builder.suggest(TEST.name).suggest(BASE.name).suggest(MODEL.name).suggest(SCRIPT.name).suggest(TEXT.name);
 			return builder.buildFuture();
 		};
 		
@@ -46,7 +50,7 @@ public class ParticlePlusCommand implements Command<ServerCommandSource> {
 			if (str.toLowerCase().equals("test")) return TEST;
 			else if (str.toLowerCase().equals("base")) return BASE;
 			else if (str.toLowerCase().equals("model")) return MODEL;
-			else if (str.toLowerCase().equals("program")) return PROGRAM;
+			else if (str.toLowerCase().equals("program")) return SCRIPT;
 			else if (str.toLowerCase().equals("text")) return TEXT;
 			else return null;
 		}
