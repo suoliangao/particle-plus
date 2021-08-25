@@ -24,14 +24,14 @@ public class ParticleWrap {
 	private static final Class<?> clazz = Particle.class;
 	private Particle particle;
 	// field to modify in particle
-	private Field x, y, z, vx, vy, vz, r, g, b, a, age, collideWithWorld;
+	double groupX, groupY, groupZ;
+	ParticleGroup group;
+	private Field x, y, z, vx, vy, vz, r, g, b, a, age, dead, collideWithWorld;
 	private int maxAge;
 	// reflection get
-	private <T> T get (Field f) {try {return (T)f.get(particle);} catch (Exception e) {e.printStackTrace(); return null;}}
 	private double getDouble (Field f) {try {return f.getDouble(particle);} catch (Exception e) {e.printStackTrace(); return 0;}}
 	private float getFloat (Field f) {try {return f.getFloat(particle);} catch (Exception e) {e.printStackTrace(); return 0;}}
 	// reflection set
-	private <T> void set (Field f, T value) {try {f.set(particle, value);} catch (Exception e) {e.printStackTrace();}}
 	private void setDouble (Field f, double value) {try {f.setDouble(particle, value);} catch (Exception e) {e.printStackTrace();}}
 	private void setFloat (Field f, float value) {try {f.setFloat(particle, value);} catch (Exception e) {e.printStackTrace();}}
 	
@@ -54,10 +54,10 @@ public class ParticleWrap {
 			this.a = clazz.getField("colorAlpha");
 			// other
 			this.age = clazz.getField("age");
+			this.dead = clazz.getField("dead");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		System.out.println("[Particle Controller] " + this.getPosition());
 	}
 	// position
 	public Vec3d getPosition () {
@@ -125,5 +125,15 @@ public class ParticleWrap {
 	
 	public void setMaxAge (int maxAge) {
 		particle.setMaxAge(maxAge);
+	}
+	
+	public boolean dead () {
+		try {
+			return this.dead.getBoolean(this.particle);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return true;
 	}
 }
