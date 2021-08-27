@@ -56,42 +56,42 @@ Set the lifetime of the aprticle.
 The NBT tag controlled animation.
 
 ## Animation NBT format:
->type: int
->    0 - Instant set value. (default)
->    1 - Linear key frame.
->    2 - Bezier key frame.
->    3 - Mathmatic expression.
->attribute: string
->    Attribute name.
+>type: int  
+>    0 - Instant set value. (default)  
+>    1 - Linear key frame.  
+>    2 - Bezier key frame.  
+>    3 - Mathmatic expression.  
+>attribute: string  
+>    Attribute name.  
 
 ## Type specific attributes
->**Instant set value**
->v: (attribute specific)
->   The value of the attribute.
->t: int
->   Time (in tick) to set the value.
+>**Instant set value**  
+>v: (attribute specific)  
+>   The value of the attribute.  
+>t: int  
+>   Time (in tick) to set the value.  
 
->**Linear key frame**
->v0: (attribute specific)
->   Initial value
->v1: (attribute specific)
->   End value
->t0: int
->   Begin time(tick)
->t1: int
->   End time(tick)
+>**Linear key frame**  
+>v0: (attribute specific)  
+>   Initial value  
+>v1: (attribute specific)  
+>   End value  
+>t0: int  
+>   Begin time(tick)  
+>t1: int  
+>   End time(tick)  
 
->**Bezier key frame**
->v: list(attribute specific)
->   Control points
->t0: int
->   Begin time(tick)
->t1: int
->   End time(tick)
+>**Bezier key frame**  
+>v: list(attribute specific)  
+>   Control points  
+>t0: int  
+>   Begin time(tick)  
+>t1: int  
+>   End time(tick)  
 
->**Mathmatic expression**
->expression: String
->   Math expression
+>**Mathmatic expression**  
+>expression: String  
+>   Math expression  
 
 ## External script
 ```
