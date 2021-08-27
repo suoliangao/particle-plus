@@ -1,4 +1,4 @@
-### particle-plus
+# particle-plus
 Minecraft particle mod.
 ## Usage (WIP)
 root:
@@ -14,7 +14,7 @@ create effect (create particle group):
 Create a new particle group with given effect (shape, text, image etc.)
 Create effect must be the first operation in a `//particle` command.
 It is possible to create multiple particle group in one command, but not recommended to do so.
-# Static arttributes
+## Static arttributes
 position:
 ```
 //particle pos <position> -> root
@@ -55,7 +55,7 @@ Set the lifetime of the aprticle.
 ```
 The NBT tag controlled animation.
 
-# Animation NBT format:
+## Animation NBT format:
 >type: int
 >    0 - Instant set value. (default)
 >    1 - Linear key frame.
@@ -64,7 +64,7 @@ The NBT tag controlled animation.
 >attribute: string
 >    Attribute name.
 
-# Type specific attributes
+## Type specific attributes
 >**Instant set value**
 >v: (attribute specific)
 >   The value of the attribute.
