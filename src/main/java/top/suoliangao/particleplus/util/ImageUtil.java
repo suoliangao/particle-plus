@@ -8,9 +8,9 @@ import java.awt.image.BufferedImage;
 
 import net.minecraft.client.MinecraftClient;
 
-public class Text2Img {
+public class ImageUtil {
 	
-	public static BufferedImage toImage (String text, float size) {
+	public static BufferedImage getTextImage (String text, float size) {
 		// get width & height
 		BufferedImage img = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g2d = img.createGraphics();

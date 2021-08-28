@@ -5,16 +5,19 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public abstract class ParticleGroup {
+import net.minecraft.util.math.Quaternion;
+
+public class ParticleGroup {
 	
-	protected double x,y,z;
+	protected double x, y, z, vx, vy, vz;
+	protected Quaternion rotation;
 	protected List<ParticleWrap> particles;
 	protected Set<ParticleWrap> deadParticles;
 	
 	public ParticleGroup (double x, double y, double z) {
-		this.x = x;
-		this.y = y;
-		this.z = z;
+		this.x = x; this.y = y; this.z = z;
+		this.vx = 0; this.vy = 0; this.vz = 0;
+		this.rotation = Quaternion.IDENTITY;
 		this.particles = new ArrayList<>();
 		this.deadParticles = new HashSet<>();
 		ParticlePlusManager.addGroup(this);

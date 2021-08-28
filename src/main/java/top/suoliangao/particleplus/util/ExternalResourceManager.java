@@ -1,14 +1,16 @@
 package top.suoliangao.particleplus.util;
 
 import java.awt.Font;
-import java.awt.FontFormatException;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
+import javax.imageio.ImageIO;
 
 import net.minecraft.client.MinecraftClient;
 
@@ -20,7 +22,12 @@ import net.minecraft.client.MinecraftClient;
 public class ExternalResourceManager {
 
 	public static File FONT_DIR, SCRIPT_DIR, IMAGE_DIR;
-//	public static Map<String, Font> loadedFonts
+	private static final Map<String, Font> fonts = new HashMap<>();
+	private static final Map<String, File> images = new HashMap<>();
+//	private static final Map<String, File> scripts = new HashMap<>();
+	
+	public static Set<String> getFonts () {return fonts.keySet();}
+	public static Set<String> getImages () {return images.keySet();}
 	
 	public static File getModResourceDir () {
 		return new File(MinecraftClient.getInstance().runDirectory, "particleplus");
@@ -28,13 +35,18 @@ public class ExternalResourceManager {
 	
 	public static final void initResources () {
 		FONT_DIR = new File (getModResourceDir(), "fonts");
-		SCRIPT_DIR = new File (getModResourceDir(), "scripts");
 		IMAGE_DIR = new File (getModResourceDir(), "images");
 		reload ();
 	}
 	
 	public static void reload () {
-		// create font dir
+		fonts.clear();
+		images.clear();
+		reloadFont();
+		reloadImage();
+	}
+	
+	private static void reloadFont () {
 		if (!FONT_DIR.exists()) FONT_DIR.mkdirs();
 		if (FONT_DIR.listFiles().length == 0) {
 			System.out.println("Font directory is empty, extracting internal resources.");
@@ -51,6 +63,7 @@ public class ExternalResourceManager {
 				}
 				os.close();
 				is.close();
+				for (File f_ : FONT_DIR.listFiles()) fonts.put(f_.getName(), Font.createFont(Font.PLAIN, f_));
 			} catch (Exception e) {
 				e.printStackTrace();
 				System.err.println("Fail to exteact resources.");
@@ -58,16 +71,20 @@ public class ExternalResourceManager {
 		}
 	}
 	
-	public static Font getFont (String name) {
+	private static void reloadImage () {
+		if (!IMAGE_DIR.exists()) FONT_DIR.mkdirs();
+		for (File f_ : FONT_DIR.listFiles()) images.put(f_.getName(), f_);
+	}
+	
+	public static BufferedImage getImage (String name) {
 		try {
-			File f =  new File (FONT_DIR, name);
-//			System.out.println("Font flie: " +  f.getAbsolutePath() + f.exists());
-			return Font.createFont(Font.PLAIN, f);
-		} catch (FontFormatException | IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			System.out.println("Fail to load font.");
+			return ImageIO.read(images.get(name));
+		} catch (Exception e) {
 			return null;
 		}
+	}
+	
+	public static Font getFont (String name) {
+		return fonts.get(name);
 	}
 }

@@ -7,19 +7,12 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
-import net.fabricmc.fabric.api.entity.event.v1.ServerEntityWorldChangeEvents;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.particle.EndRodParticle;
-import net.minecraft.client.particle.Particle;
-import net.minecraft.network.packet.s2c.play.ParticleS2CPacket;
 import net.minecraft.particle.ParticleTypes;
 import top.suoliangao.particleplus.command.ParticlePlusCommand;
 import top.suoliangao.particleplus.particle.ImageParticleGroup;
 import top.suoliangao.particleplus.particle.ParticlePlusManager;
-import top.suoliangao.particleplus.particle.ParticleWrap;
 import top.suoliangao.particleplus.util.ExternalResourceManager;
-import top.suoliangao.particleplus.util.Text2Img;
+import top.suoliangao.particleplus.util.ImageUtil;
 
 public class ParticlePlusMod  implements ModInitializer {
 	
@@ -47,7 +40,7 @@ public class ParticlePlusMod  implements ModInitializer {
 //			Particle p = client.particleManager.addParticle(ParticleTypes.END_ROD, buf.readDouble(), buf.readDouble(), buf.readDouble(), 0, 0, 0);
 //			p.setColor(0x66/255f, 0xcc/255f, 0xff/255f);
 //			new ParticleWrap(p);
-			 new ImageParticleGroup(client.particleManager, ParticleTypes.END_ROD,  buf.readDouble(), buf.readDouble(), buf.readDouble(), Text2Img.toImage("Hello Particles!", 24));
+			 new ImageParticleGroup(client.particleManager, ParticleTypes.END_ROD,  buf.readDouble(), buf.readDouble(), buf.readDouble(), ImageUtil.getTextImage("Hello Particles!", 24));
 //			ExternalResourceManager.getFont("TIMES.TTF");
 		});
 		System.out.println("Hello Particles!");
