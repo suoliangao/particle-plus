@@ -1,5 +1,12 @@
 package top.suoliangao.particleplus.network;
 
-public class ParticlePlusCommandPacket {
+import io.netty.buffer.Unpooled;
+import net.minecraft.network.PacketByteBuf;
 
+public class ParticlePlusCommandPacket extends PacketByteBuf {
+
+	public ParticlePlusCommandPacket() {
+		super(Unpooled.buffer());
+		// TODO Auto-generated constructor stub
+	}
 }

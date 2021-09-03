@@ -10,11 +10,16 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 
+import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
+import net.fabricmc.fabric.api.event.EventFactory;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.command.argument.NbtCompoundArgumentType;
+import net.minecraft.command.argument.RotationArgumentType;
 import net.minecraft.command.argument.Vec3ArgumentType;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.util.Identifier;
@@ -54,28 +59,10 @@ public class ParticlePlusCommand implements Command<ServerCommandSource> {
 		}
 		LiteralCommandNode root = dispatcher.register(literal ("/particle"));
 		// *** misc commands ***
-		dispatcher.register(literal ("/particle").then(literal("reload")));
-		// *** create effects ***
-		dispatcher.register(literal ("/particle").then(literal("create").then(argument("effect", NbtCompoundArgumentType.nbtCompound()).redirect(root))));
-		//create particle text
-		dispatcher.register(literal ("/particle").then(literal("create").then(literal("text")
-				.then(argument("text", StringArgumentType.string()).then(argument("font",StringArgumentType.word()).suggests(FONT_SUGGESTION_PROVIDER).then(argument("size",FloatArgumentType.floatArg(0)).suggests((ctx, builder) -> {builder.suggest(16);return builder.buildFuture();}).redirect(root)
-				.executes(new ParticlePlusCommand())))))));
+		dispatcher.register(literal ("/particle_admin").then(literal("reload").executes(ctx -> {ExternalResourceManager.reload();return 1;})));
+		// *** particle group effects ***
 		
-		// *** static attributes ***
-		dispatcher.register(literal ("/particle").then(literal("pos").then(argument("pos", Vec3ArgumentType.vec3()).redirect(root).executes(new ParticlePlusCommand()))));
-		dispatcher.register(literal ("/particle").then(literal("rot").then(argument("rot", Vec3ArgumentType.vec3()).redirect(root).executes(new ParticlePlusCommand()))));
-		dispatcher.register(literal ("/particle").then(literal("lookat")
-				.then(argument("target", Vec3ArgumentType.vec3()).then(argument("angle", FloatArgumentType.floatArg())).redirect(root).executes(new ParticlePlusCommand()))
-				.then(argument("target", EntityArgumentType.entity()).then(argument("angle", FloatArgumentType.floatArg())).redirect(root).executes(new ParticlePlusCommand()))
-				));
-		dispatcher.register(literal ("/particle").then(literal("color").then(argument("color", StringArgumentType.word()).suggests(COLOR_SUGGESTION_PROVIDER).redirect(root).executes(new ParticlePlusCommand()))));
-		dispatcher.register(literal ("/particle").then(literal("life")
-				.then(argument("start", IntegerArgumentType.integer(0))
-				.then(argument("end", IntegerArgumentType.integer(-1)).suggests((ctx, builder) -> {builder.suggest(-1); return builder.buildFuture();})
-				.redirect(root).executes(new ParticlePlusCommand())))));
 		// *** simple animation ***
-		
 		System.out.println("Register particleplus command!");
 		dispatcher.register(literal("/particle").executes(new ParticlePlusCommand()));
 	}

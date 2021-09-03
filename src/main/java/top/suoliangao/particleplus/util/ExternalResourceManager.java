@@ -48,10 +48,10 @@ public class ExternalResourceManager {
 	
 	private static void reloadFont () {
 		if (!FONT_DIR.exists()) FONT_DIR.mkdirs();
-		if (FONT_DIR.listFiles().length == 0) {
-			System.out.println("Font directory is empty, extracting internal resources.");
-			try {
-				File f = new File (FONT_DIR, "TIMES.TTF");
+		try {
+			File f = new File (FONT_DIR, "TIMES.TTF");
+			if (FONT_DIR.listFiles().length == 0) {
+				System.out.println("Font directory is empty, extracting internal resources.");
 				f.createNewFile();
 				InputStream is = ExternalResourceManager.class.getResourceAsStream("/assets/particleplus/defaultres/TIMES.TTF");
 				OutputStream os = new FileOutputStream(f);
@@ -63,12 +63,15 @@ public class ExternalResourceManager {
 				}
 				os.close();
 				is.close();
-				for (File f_ : FONT_DIR.listFiles()) fonts.put(f_.getName(), Font.createFont(Font.PLAIN, f_));
-			} catch (Exception e) {
-				e.printStackTrace();
-				System.err.println("Fail to exteact resources.");
 			}
+			System.out.println("Loading fonts...");
+			for (File f_ : FONT_DIR.listFiles()) fonts.put(f_.getName(), Font.createFont(Font.PLAIN, f_));
+			System.out.println(fonts.size() + " successfully loaded.");
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.err.println("Fail to exteact resources.");
 		}
+		
 	}
 	
 	private static void reloadImage () {

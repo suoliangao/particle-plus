@@ -40,7 +40,7 @@ public class ParticlePlusMod  implements ModInitializer {
 //			Particle p = client.particleManager.addParticle(ParticleTypes.END_ROD, buf.readDouble(), buf.readDouble(), buf.readDouble(), 0, 0, 0);
 //			p.setColor(0x66/255f, 0xcc/255f, 0xff/255f);
 //			new ParticleWrap(p);
-			 new ImageParticleGroup(client.particleManager, ParticleTypes.END_ROD,  buf.readDouble(), buf.readDouble(), buf.readDouble(), ImageUtil.getTextImage("Hello Particles!", 24));
+			new ImageParticleGroup(client.particleManager, ParticleTypes.END_ROD,  buf.readDouble(), buf.readDouble(), buf.readDouble(), ImageUtil.getTextImage("Hello Particles!", 24));
 //			ExternalResourceManager.getFont("TIMES.TTF");
 		});
 		System.out.println("Hello Particles!");

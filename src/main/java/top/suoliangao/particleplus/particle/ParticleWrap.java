@@ -20,7 +20,10 @@ import net.minecraft.util.math.Vec3f;
  *
  */
 public class ParticleWrap {
-	
+	private class ParticleControl {
+		static Field x, y, z, vx, vy, vz, r, g, b, a, age, dead, collideWithWorld;
+		private ParticleControl () {}
+	}
 	private static final Class<?> clazz = Particle.class;
 	private Particle particle;
 	// field to modify in particle
@@ -39,6 +42,7 @@ public class ParticleWrap {
 		this.particle = particle;
 		this.maxAge = this.particle.getMaxAge();
 		try {
+			ParticleControl pc = new ParticleControl();
 			// position
 			this.x = clazz.getField("x");
 			this.y = clazz.getField("y");
