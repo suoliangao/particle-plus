@@ -6,9 +6,7 @@ import net.minecraft.client.particle.Particle;
 import net.minecraft.util.math.Vec3d;
 
 public class ParticleReflection {
-	
-	private ParticleReflection () {}
-	
+	// static fields
 	public static final Class<Particle> clazz = Particle.class;
 	public static Field x, y, z, vx, vy, vz, r, g, b, a, age, dead, collideWithWorld;
 	
@@ -31,8 +29,28 @@ public class ParticleReflection {
 		dead = clazz.getField("dead");
 	}
 	
-	/** Get position of a particle */
-	public static Vec3d getPos (Particle p) {
+	private Particle p;
+	public ParticleReflection (Particle p) {
+		this.p = p;
+	}
+	// position
+	/** Get x position */
+	public double getX () {try {return x.getDouble(this.p);} catch (Exception e) {e.printStackTrace();return 0;}}
+	/** Get y position */
+	public double getY () {try {return y.getDouble(this.p);} catch (Exception e) {e.printStackTrace();return 0;}}
+	/** Get z position */
+	public double getZ () {try {return z.getDouble(this.p);} catch (Exception e) {e.printStackTrace();return 0;}}
+	/** Get position of a particle as double array. */
+	public double[] getPos () {
+		try {
+			return new double[] {x.getDouble(p), y.getDouble(p), z.getDouble(p)};
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	/** Get position of a particle as Vec3d. */
+	public Vec3d getVecPos () {
 		try {
 			return new Vec3d (x.getDouble(p), y.getDouble(p), z.getDouble(p));
 		} catch (Exception e) {
@@ -40,5 +58,4 @@ public class ParticleReflection {
 			return null;
 		}
 	}
-	
 }

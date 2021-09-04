@@ -14,13 +14,16 @@ import java.util.Arrays;
  * @author SuoLianGao
  */
 public class MathUtil {
-	
 	private MathUtil() {}
 	// constants
 	/** The 3x3 identity matrix */
 	public static final double[] IDENTITY_MATRIX = new double[] {1,0,0,0,1,0,0,0,1};
 	public static final int X_AXIS = 1, Y_AXIS = 2, Z_AXIS = 3;
 	// vector operation
+	/** Cross product of two vectors.*/
+	public static double[] cross (double x1, double y1, double z1, double x2, double y2, double z2) {
+		return new double[] {y1*z2 - y2*z1, z1*x2 - x1*z2, x1*y2 - y1*x2};
+	}
 	/**
 	 * The norm(length) of a vector.
 	 * @param x : X component of a vector.
@@ -30,17 +33,6 @@ public class MathUtil {
 	 */
 	public static double norm (double x, double y, double z) {
 		return sqrt(x*x + y*y + z*z);
-	}
-	/**
-	 * Normalize a vector.<br>
-	 * <b>THIS METHOD CHANGES THE INPUT VARIABLES!!!</b>
-	 * @param x
-	 * @param y
-	 * @param z
-	 */
-	public static void normalize (double x, double y, double z) {
-		double n = norm (x, y, z);
-		x /= n; y /= n; z /= n;
 	}
 	/**
 	 * Normalize vector(s).<br>
@@ -86,9 +78,9 @@ public class MathUtil {
 	/**
 	 * Euler rotation.<br>
 	 * x -> y -> z
-	 * @param x	: Rotation around x-axis clockwise in degrees.
-	 * @param y : Rotation around y-axis clockwise in degrees.
-	 * @param z : Rotation around z-axis clockwise in degrees.
+	 * @param x	: Rotation around x-axis in degrees.
+	 * @param y : Rotation around y-axis in degrees.
+	 * @param z : Rotation around z-axis in degrees.
 	 * @return Rotation matrix around the axis.<br>
 	 * <b>null</b> if the input value was invalid.
 	 */
@@ -107,12 +99,12 @@ public class MathUtil {
 	/**
 	 * Gives the rotation matrix around basis axis.
 	 * @param axis : x, y, or z axis.
-	 * @param angle : Rotation angle in degrees clockwise.
+	 * @param angle : Rotation angle in degrees.
 	 * @return Rotation matrix around the axis.<br>
 	 * <b>null</b> if the input value was invalid.
 	 */
 	public static double[] rotationMatirx (int axis, double angle) {
-		double a = toRadians(angle);
+		double a = -toRadians(angle);
 		switch (axis) {
 		case X_AXIS:
 			return new double[] {1, 0, 0, 0, cos(a), sin(a), 0, -sin(a), cos(a)};
@@ -126,7 +118,7 @@ public class MathUtil {
 	
 	/**
 	 * Gives the rotation matrix around arbitrary axis (giving a unit vector doesn't accelerate the calculation).
-	 * @param angle : Rotation angle in degrees clockwise.
+	 * @param angle : Rotation angle in degrees.
 	 * @param axisX	: X component of the axis vector.
 	 * @param axisY : Y component of the axis vector.
 	 * @param axisZ : Z component of the axis vector.
@@ -135,7 +127,7 @@ public class MathUtil {
 	 */
 	public static double[] rotationMatrix (double angle, double axisX, double axisY, double axisZ) {
 		double[] d = normal (axisX, axisY, axisZ);
-		double a = -toRadians(angle), x = d[0], y = d[1], z = d[2];
+		double a = toRadians(angle), x = d[0], y = d[1], z = d[2];
 		d = new double[] {cos(a/2), sin(a/2)*x, sin(a/2)*y, sin(a/2)*z};
 		return new double[] {
 				2*(d[0] * d[0] + d[1] * d[1]) - 1, 2*(d[1] * d[2] - d[0] * d[3]) - 0, 2*(d[1] * d[3] + d[0] * d[2]) - 0,

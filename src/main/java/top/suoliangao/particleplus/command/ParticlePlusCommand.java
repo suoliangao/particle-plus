@@ -15,6 +15,7 @@ import net.fabricmc.fabric.api.event.EventFactory;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.command.argument.NbtCompoundArgumentType;
 import net.minecraft.command.argument.RotationArgumentType;
@@ -57,9 +58,9 @@ public class ParticlePlusCommand implements Command<ServerCommandSource> {
 			System.err.println("Fail to register //particle command, identifier parse faild.");
 			return;
 		}
-		LiteralCommandNode root = dispatcher.register(literal ("/particle"));
+//		LiteralCommandNode root = dispatcher.register(literal ("/particle"));
 		// *** misc commands ***
-		dispatcher.register(literal ("/particle_admin").then(literal("reload").executes(ctx -> {ExternalResourceManager.reload();return 1;})));
+//		dispatcher.register(literal ("/particle_admin").then(literal("reload").executes(ctx -> {ExternalResourceManager.reload();return 1;})));
 		// *** particle group effects ***
 		
 		// *** simple animation ***
@@ -73,14 +74,10 @@ public class ParticlePlusCommand implements Command<ServerCommandSource> {
 		if (PARTICLE_PACKET_ID == null) return 0;
 		System.out.println("Executing //particle command!!!");
 		Vec3d pos = ctx.getSource().getPosition();
-		System.out.println(PARTICLE_PACKET_ID);
 		ctx.getSource().getWorld().getPlayers().forEach(player -> {
-			System.out.println(player.getName().toString());
 			PacketByteBuf buff = PacketByteBufs.create();
-			System.out.println("11111");
 			buff.writeDouble(pos.x).writeDouble(pos.y+1).writeDouble(pos.z);
 			ServerPlayNetworking.send(player, PARTICLE_PACKET_ID, buff);
-			System.out.println("Sending packet to player " + player.getName());
 		});
 		return 1;
 	}

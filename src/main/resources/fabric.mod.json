@@ -20,6 +20,9 @@
   "entrypoints": {
     "main": [
       "top.suoliangao.particleplus.ParticlePlusMod"
+    ],
+    "client":[
+      "top.suoliangao.particleplus.ParticlePlusMod"
     ]
   },
   "mixins": [
