@@ -10,11 +10,11 @@ import net.minecraft.client.MinecraftClient;
 
 public class ImageUtil {
 	
-	public static BufferedImage getTextImage (String text, float size) {
+	public static BufferedImage getTextImage (String text, String fontName, float fontSize) {
 		// get width & height
 		BufferedImage img = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g2d = img.createGraphics();
-		Font font = ExternalResourceManager.getFont("TIMES.TTF").deriveFont(size);
+		Font font = ExternalResourceManager.getFont(fontName).deriveFont(fontSize);
 		g2d.setFont(font);
 //		new Font
 		FontMetrics fm = g2d.getFontMetrics();

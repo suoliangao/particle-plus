@@ -12,7 +12,10 @@ import java.util.Set;
 
 import javax.imageio.ImageIO;
 
+import net.minecraft.MinecraftVersion;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.server.MinecraftServer;
+import top.suoliangao.particleplus.ParticlePlusMod;
 
 /**
  * Manage mod's external resources, including external scripts, images, particle model files etc.
@@ -30,7 +33,8 @@ public class ExternalResourceManager {
 	public static Set<String> getImages () {return images.keySet();}
 	
 	public static File getModResourceDir () {
-		return new File(MinecraftClient.getInstance().runDirectory, "particleplus");
+
+		return new File(ParticlePlusMod.modDataDir, "particleplus");
 	}
 	
 	public static final void initResources () {

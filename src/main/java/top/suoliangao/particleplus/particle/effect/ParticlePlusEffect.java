@@ -1,17 +1,26 @@
 package top.suoliangao.particleplus.particle.effect;
 
-import com.google.gson.JsonNull;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtHelper;
-import net.minecraft.nbt.NbtIo;
-import net.minecraft.util.JsonHelper;
-import net.minecraft.util.math.MathHelper;
+import java.nio.ByteBuffer;
 
 public abstract class ParticlePlusEffect {
 
-	protected ParticlePlusEffect () {
-		
+	protected EffectTypes type;
+//	protected ByteBuf buf;
+
+	protected ParticlePlusEffect (EffectTypes type) {
+		this.type = type;
 	}
-	
+
+	protected ParticlePlusEffect (ByteBuf buf) {}
+
+	public abstract double[] getParticles ();
+	public abstract ByteBuf buildByteBuffer ();
+//	{
+//		byte[] bs = this.buf.array();
+//		this.buf.setIndex(0, 0);
+//		return bs;
+//	}
 }

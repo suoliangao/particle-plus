@@ -14,6 +14,7 @@ import net.fabricmc.fabric.impl.client.particle.ParticleFactoryRegistryImpl;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleFactory;
+import net.minecraft.client.particle.ParticleManager;
 import net.minecraft.client.render.Camera;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.particle.DustParticleEffect;
@@ -45,11 +46,15 @@ public class ParticleGroup {
 	public ParticleGroup (double x, double y, double z) {
 		System.out.println("Creating particle group.");
 		this.x = x; this.y = y; this.z = z;
-		this.resetTransform();
 		this.particles = new ArrayList<>();
 		this.deadParticles = new HashSet<>();
+		this.resetTransform();
 //		ByteArrayDataOutput b = ByteStreams.newDataOutput();
 //		ByteBuffer.wrap(null);
+	}
+	
+	public Vec3d getPosition () {
+		return new Vec3d (this.x, this.y, this.z);
 	}
 	// transform
 	public void translate (double x, double y, double z) {
@@ -57,23 +62,27 @@ public class ParticleGroup {
 		this.x += vec[0];
 		this.y += vec[1];
 		this.z += vec[2];
+		repositionParticles ();
 	}
 	
 	public void move (double x, double y, double z) {
 		this.x += x;
 		this.y += y;
 		this.z += z;
+		repositionParticles ();
 	}
 	
 	public void moveto (double x, double y, double z) {
 		this.x = x;
 		this.y = y;
 		this.z = z;
+		repositionParticles ();
 	}
 	
 	public void rotate (double axisX, double axisY, double axisZ, double angle) {
 		try {
 			MathUtil.applyTransform(basis, MathUtil.rotationMatrix(angle, axisX, axisY, axisZ));
+			repositionParticles ();
 		} catch (InvalidInputException e) {}
 	}
 	/** Euler */
@@ -85,36 +94,41 @@ public class ParticleGroup {
 			else if (Double.compare(0, x) == 0 && Double.compare(0, y) == 0) m = MathUtil.rotationMatirx(MathUtil.Z_AXIS, z);
 			else m = MathUtil.rotationMatrix(x, y, z);
 			MathUtil.applyTransform(basis, m);
+			repositionParticles ();
 		} catch (InvalidInputException e) {}
 	}
 	
-	public void lookAt (double x, double y, double z, double angle) {
-		
-	}
-	
-	public void tick () {
-		if (this.showAxis) {
-			double[] d = new double[3];
-			// rand x axis
-			d[0] = this.x + this.basis[0] * Math.random();
-			d[1] = this.y + this.basis[1] * Math.random();
-			d[2] = this.z + this.basis[2] * Math.random();
-			MinecraftClient.getInstance().particleManager.addParticle(DustParticleEffect.DEFAULT, d[0], d[1], d[2], this.basis[0]/30, this.basis[1]/30, this.basis[2]/30).setColor(1, 0, 0);
-			// rand x axis
-			d[0] = this.x + this.basis[3] * Math.random();
-			d[1] = this.y + this.basis[4] * Math.random();
-			d[2] = this.z + this.basis[5] * Math.random();
-			MinecraftClient.getInstance().particleManager.addParticle(DustParticleEffect.DEFAULT, d[0], d[1], d[2], this.basis[3]/30, this.basis[4]/30, this.basis[5]/30).setColor(0, 1, 0);
-			// rand x axis
-			d[0] = this.x + this.basis[6] * Math.random();
-			d[1] = this.y + this.basis[7] * Math.random();
-			d[2] = this.z + this.basis[8] * Math.random();
-			MinecraftClient.getInstance().particleManager.addParticle(DustParticleEffect.DEFAULT, d[0], d[1], d[2], this.basis[6]/30, this.basis[7]/30, this.basis[8]/30).setColor(0, 0, 1);
-		}
-	}
+//	public void lookAt (double x, double y, double z, double angle) {
+//		try {
+//			double[] axis = MathUtil.cross(basis[6], basis[7], basis[8], x, y, z);
+//			double a = MathUtil.angle (basis[6], basis[7], basis[8], x, y, z);
+//			MathUtil.applyTransform(basis, MathUtil.rotationMatrix(a, axis[0], axis[1], axis[2]));
+//			MathUtil.applyTransform(basis, MathUtil.rotationMatrix(MathUtil.Z_AXIS, angle));
+//			repositionParticles ();
+//		} catch (InvalidInputException e) {}
+//	}
 	
 	public void resetTransform () {
 		this.basis = MathUtil.IDENTITY_MATRIX.clone();
+		repositionParticles ();
+	}
+	
+	public void repositionParticles () {
+		if (this.particles.isEmpty()) return;
+		double[] vecs = new double[this.particles.size() * 3];
+		int i = 0;
+		for (ParticleWrap p : this.particles) {
+			vecs[i*3+0] = p.getWorldX();
+			vecs[i*3+1] = p.getWorldY();
+			vecs[i*3+2] = p.getWorldZ();
+			i++;
+		}
+		vecs = MathUtil.transform(vecs, basis);
+		i = 0;
+		for (ParticleWrap p : this.particles) {
+			p.setWorldPos(this.x + vecs[i*3+0], this.y + vecs[i*3+1], this.z + vecs[i*3+2]);
+			i++;
+		}
 	}
 	// color
 	public void setColor (float r, float g, float b) {
@@ -127,6 +141,40 @@ public class ParticleGroup {
 		this.particles.forEach(p -> {
 			p.getParticle().buildGeometry(bufferBuilder, camera, f);
 		});
+	}
+	
+	public void tick () {
+		if (this.showAxis) {
+			showAxis ();
+		}
+	}
+	
+	private void showAxis () {
+		ParticleManager pm = MinecraftClient.getInstance().particleManager;
+		double s = 3; Particle p;
+		double r = 0;
+		double[] d = new double[3];
+		// rand x axis
+		r = Math.random();
+		d[0] = this.x + this.basis[0] * r;
+		d[1] = this.y + this.basis[1] * r;
+		d[2] = this.z + this.basis[2] * r;
+		p = pm.addParticle(DustParticleEffect.DEFAULT, d[0], d[1], d[2], basis[0]/s, basis[1]/s, basis[2]/s);
+		p.setColor(1, 0, 0); p.setMaxAge(15);
+		// rand x axis
+		r = Math.random();
+		d[0] = this.x + this.basis[3] * r;
+		d[1] = this.y + this.basis[4] * r;
+		d[2] = this.z + this.basis[5] * r;
+		p = pm.addParticle(DustParticleEffect.DEFAULT, d[0], d[1], d[2], basis[3]/s, basis[4]/s, basis[5]/s);
+		p.setColor(0, 1, 0); p.setMaxAge(15);
+		// rand x axis
+		r = Math.random();
+		d[0] = this.x + this.basis[6] * r;
+		d[1] = this.y + this.basis[7] * r;
+		d[2] = this.z + this.basis[8] * r;
+		p = pm.addParticle(DustParticleEffect.DEFAULT, d[0], d[1], d[2], basis[6]/s, basis[7]/s, basis[8]/s);
+		p.setColor(0, 0, 1); p.setMaxAge(15);
 	}
 //	public boolean dead () {
 //		if (this.particles.size() == 0) return true;

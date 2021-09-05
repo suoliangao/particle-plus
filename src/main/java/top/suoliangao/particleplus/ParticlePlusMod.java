@@ -1,8 +1,8 @@
 package top.suoliangao.particleplus;
 
-
 import java.io.File;
 
+import net.fabricmc.api.DedicatedServerModInitializer;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -10,7 +10,10 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback.Registry;
 import net.fabricmc.loader.launch.knot.KnotClient;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.particle.ParticleTypes;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.text.TranslatableText;
 import top.suoliangao.particleplus.command.ParticlePlusCommand;
 import top.suoliangao.particleplus.particle.ImageParticleGroup;
 import top.suoliangao.particleplus.particle.ParticleGroup;
@@ -18,14 +21,13 @@ import top.suoliangao.particleplus.particle.ParticlePlusManager;
 import top.suoliangao.particleplus.util.ExternalResourceManager;
 import top.suoliangao.particleplus.util.ImageUtil;
 
-public class ParticlePlusMod implements ModInitializer, ClientModInitializer {
+public class ParticlePlusMod implements ModInitializer, ClientModInitializer, DedicatedServerModInitializer {
 	
 	private static ParticlePlusMod instance;
 	public static ParticlePlusMod getInstance () {return instance;}
 	
-	private File modDataDir;
-	public File getModDataDir () {return this.modDataDir;}
-	
+	public static final File modDataDir = new File ("particleplus");
+
 	public ParticlePlusManager ppmgr;
 	
 	public ParticlePlusMod () {
@@ -57,7 +59,22 @@ public class ParticlePlusMod implements ModInitializer, ClientModInitializer {
 		System.out.println("Registering client listener.");
 		ClientPlayNetworking.registerGlobalReceiver(ParticlePlusCommand.PARTICLE_PACKET_ID, (client, handler, buf, responseSender) -> {
 			System.out.println("Spawning particles on client.");
-			ppmgr.addParticleGroup("test", new ParticleGroup(buf.readDouble(), buf.readDouble(), buf.readDouble()));
+			ParticleGroup pg = null;
+			switch (buf.readByte()) {
+			case 0: //create
+				ppmgr.addParticleGroup("test", new ParticleGroup(buf.readDouble(), buf.readDouble(), buf.readDouble()));
+				break;
+			case 1: //Euler
+				pg = ppmgr.getParticleGroup("test");
+				if (pg != null)
+					pg.rotate(buf.readDouble(), buf.readDouble(), buf.readDouble());
+				break;
+			case 2: //Euler
+				pg = ppmgr.getParticleGroup("test");
+				if (pg != null)
+					pg.rotate(buf.readDouble(), buf.readDouble(), buf.readDouble(), buf.readDouble());
+				break;
+			}
 //			Particle p = client.particleManager.addParticle(ParticleTypes.END_ROD, buf.readDouble(), buf.readDouble(), buf.readDouble(), 0, 0, 0);
 //			p.setColor(0x66/255f, 0xcc/255f, 0xff/255f);
 //			new ParticleWrap(p);
@@ -66,6 +83,10 @@ public class ParticlePlusMod implements ModInitializer, ClientModInitializer {
 		});
 		System.out.println("Hello Particles!");
 	}
-	
 
+
+	@Override
+	public void onInitializeServer() {
+
+	}
 }

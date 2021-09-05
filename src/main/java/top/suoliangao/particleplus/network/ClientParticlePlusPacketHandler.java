@@ -9,10 +9,8 @@ import net.minecraft.network.PacketByteBuf;
 public class ClientParticlePlusPacketHandler implements PlayChannelHandler {
 
 	@Override
-	public void receive(MinecraftClient client, ClientPlayNetworkHandler handler, PacketByteBuf buf,
-			PacketSender responseSender) {
+	public void receive(MinecraftClient client, ClientPlayNetworkHandler handler, PacketByteBuf buf, PacketSender responseSender) {
 		// TODO Auto-generated method stub
 		
 	}
-
 }

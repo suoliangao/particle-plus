@@ -32,12 +32,26 @@ public class ParticlePlusManager {//extends ParticleManager {
 	
 	public void addParticleGroup (String name, ParticleGroup group) {
 		group.showAxis = true;
-		if (this.particleGroups.isEmpty())
+		if (this.particleGroups.isEmpty()) {
+			System.out.println("Adding test group." + group.getPosition());
 			this.particleGroups.put("test", group);
-		else
+		} else {
+			System.out.println("Cleaning test group.");
 			particleGroups.remove("test");
+		}
 	}
 	
+	public ParticleGroup getParticleGroup (String name) {
+		return this.particleGroups.get(name);
+	}
+
+	public ParticleGroup createGroup (String name, double x, double y, double z) {
+		if (particleGroups.containsKey(name)) return null;
+		ParticleGroup g = new ParticleGroup(x,y,z);
+		particleGroups.put(name, g);
+		return g;
+	}
+
 //	@Override
 //	public void renderParticles(MatrixStack matrices, Immediate immediate, LightmapTextureManager lightmapTextureManager, Camera camera, float f) {
 //		// TODO Auto-generated method stub

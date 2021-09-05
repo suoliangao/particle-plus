@@ -12,6 +12,7 @@ import top.suoliangao.particleplus.ParticlePlusMod;
 public class ParticleManagerMixin {
 	 @Inject(method = "<init>", at = @At("TAIL"))
 	 public void constructorTail (CallbackInfo ci) {
+		 
 		 System.out.println("Particle Plus Mod MIXIN!!!");
 		 ParticlePlusMod.getInstance().initParticleManager();
 	 }

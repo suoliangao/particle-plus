@@ -36,5 +36,27 @@ public class ParticleWrap {
 		this.maxAge = this.particle.getMaxAge();
 	}
 	
+	public double[] getPos () {
+		return new double[] {this.x, this.y, this.z};
+	}
+	
+	public void setPos (double x, double y, double z) {
+		this.x = x;
+		this.y = y;
+		this.z = z;
+	}
+	
+	public double getWorldX () {return this.worldX;}
+	public double getWorldY () {return this.worldY;}
+	public double getWorldZ () {return this.worldZ;}
+//	public double[] getWroldPos () {return new double[] {this.worldX, this.worldY, this.worldZ};}
+	
+	public void setWorldPos (double x, double y, double z) {
+		this.worldX = x;
+		this.worldY = y;
+		this.worldZ = z;
+		particle.setPos(x, y, z);
+	}
+	
 	public Particle getParticle () {return this.particle;}
 }
